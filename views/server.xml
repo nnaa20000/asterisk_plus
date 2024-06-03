@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="asterisk_plus_server_action" model="ir.actions.server">
+      <field name="name">Server</field>
+      <field name="model_id" ref="model_asterisk_plus_server"/>
+      <field name="state">code</field>
+      <field name="code">action = model.open_server_form()</field>
+  </record>
+
+  <menuitem id="asterisk_plus_server_menu"
+            sequence="300"
+            parent="asterisk_plus.asterisk_settings_menu"
+            name="Server"
+            action="asterisk_plus_server_action"/>
+
+  <record model="ir.ui.view" id="asterisk_plus_server_form">
+      <field name="name">asterisk_plus_server_form</field>
+      <field name="model">asterisk_plus.server</field>
+      <field name="arch" type="xml">
+          <form create="false">
+              <header>
+                  <button type="object" string="Reload" class="btn-primary" 
+                      icon="fa-refresh" name="reload_action"/>
+                  <button type="object" string="Agent Ping"
+                      icon="fa-check" name="ping_agent"/>
+                  <button type="object" string="Asterisk Ping"
+                      icon="fa-link" name="asterisk_ping"/>
+                  <button type="object" string="Server Information"
+                      icon="fa-info" name="get_system_information"/>
+                  <button type="object" string="Reload Config"
+                      icon="fa-file-code-o" name="reload_config"/>
+              </header>
+              <sheet>
+                <field name="is_module_update" invisible="1"/>
+                <widget name="web_ribbon" text="New version available!" bg_color="bg-primary"
+                  invisible="is_module_update != True"/>
+                <div class="oe_button_box" name="button_box">
+                </div>
+                <div class="oe_title" name="title">
+                  <label for="name" class="oe_edit_only"/>
+                  <h1><field name="name"/></h1>
+                  <div invisible="is_module_update != True">
+                    <small><field name="market_download_link" nolabel="1"/></small>
+                  </div>
+                </div>
+                <notebook>
+                  <page name="agent" string="Agent">
+                    <group>
+                      <group>
+                        <field name="ami_host"/>
+                        <field name="ami_port"/>
+                        <field name="ami_user"/>
+                        <field name="ami_password" password="1"/>
+                        <field name="ami_trace"/>
+                      </group>
+                      <group>
+                        <field name="permit_agent_initialization" widget="boolean_toggle"/>
+                        <field name="agent_initialized" widget="boolean_toggle"/>
+                      </group>
+                    </group>
+                    <group>
+                      <field name="agent_options">
+                        <tree editable="bottom">
+                          <field name="key"/>
+                          <field name="value"/>
+                        </tree>
+                      </field>
+                    </group>
+                  </page>
+                  <page name="settings" string="SIP Users">
+                    <group>
+                      <group>
+                        <field name="auto_create_pbx_users"/>
+                        <field name="sip_peer_start_exten" invisible="auto_create_pbx_users == False"/>
+                        <field name="generate_sip_peers"/>
+                        <field name="sip_peer_transport" invisible="generate_sip_peers == False"/>
+                        <field name="sip_protocol" invisible="generate_sip_peers == False"/>
+                        <field name="security_token" invisible="generate_sip_peers == False"/>
+                      </group>
+                      <group>
+                        <field name="sip_peer_template" invisible="generate_sip_peers == False"/>
+                        <field name="sip_templates" invisible="generate_sip_peers == False"/>
+                      </group>
+                    </group>
+                  </page>
+                  <page name="localization" string="Localization">
+                    <group>
+                      <group>
+                        <field name="country_id"/>
+                        <field name="tz"/>
+                      </group>
+                    </group>
+                  </page>
+                </notebook>
+              </sheet>
+          </form>
+      </field>
+  </record>
+
+</odoo>
